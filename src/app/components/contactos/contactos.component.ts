@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { Contacto } from "../../models/contacto";
-import { ArticuloFamilia } from "../../models/articulo-familia";
 
 import { ContactosService } from "../../services/contactos.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -26,7 +25,7 @@ export class ContactosComponent implements OnInit {
     RD: " Revisar los datos ingresados..."
   };
 
-  ListaContactos: Contacto[] = [];
+  Lista: Contacto[] = [];
   SinBusquedasRealizadas = true;
 
   FormReg: FormGroup;
@@ -44,7 +43,7 @@ export class ContactosComponent implements OnInit {
     this.FormReg = this.formBuilder.group({
       IdContacto: [0],
       Nombre: ["", [Validators.required]],
-      Telefono: [null, [Validators.required, Validators.pattern("[0-9]{1,7}")]],
+
       FechaNacimiento: [
         "",
         [
@@ -53,7 +52,8 @@ export class ContactosComponent implements OnInit {
             "(0[1-9]|[12][0-9]|3[01])[-/](0[1-9]|1[012])[-/](19|20)[0-9]{2}"
           )
         ]
-      ]
+      ],
+      Telefono: [null, [Validators.required, Validators.pattern("[0-9]{1,7}")]]
     });
   }
 
@@ -68,10 +68,12 @@ export class ContactosComponent implements OnInit {
   // Buscar segun los filtros, establecidos en FormReg
   Buscar() {
     this.SinBusquedasRealizadas = false;
-    this.contactosService.get().subscribe(
-      {next: contactos => this.ListaContactos = contactos,
-       error: err => console.log(err)
-    });
+    this.contactosService
+      .get()
+      .subscribe({
+        next: contactos => (this.Lista = contactos),
+        error: err => console.log(err)
+      });
   }
 
   // Obtengo un registro especifico según el Id
