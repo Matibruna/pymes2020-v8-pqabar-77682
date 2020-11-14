@@ -68,12 +68,10 @@ export class ContactosComponent implements OnInit {
   // Buscar segun los filtros, establecidos en FormReg
   Buscar() {
     this.SinBusquedasRealizadas = false;
-    this.contactosService
-      .get()
-      .subscribe({
-        next: contactos => (this.Lista = contactos),
-        error: err => console.log(err)
-      });
+    this.contactosService.get().subscribe({
+      next: contactos => (this.Lista = contactos),
+      error: err => console.log(err)
+    });
   }
 
   // Obtengo un registro especifico según el Id
@@ -99,12 +97,6 @@ export class ContactosComponent implements OnInit {
 
   // comienza la modificacion, luego la confirma con el metodo Grabar
   Modificar(Dto) {
-    if (!Dto.Activo) {
-      this.modalDialogService.Alert(
-        "No puede modificarse un registro Inactivo."
-      );
-      return;
-    }
     this.submitted = false;
     this.FormReg.markAsPristine();
     this.FormReg.markAsUntouched();
