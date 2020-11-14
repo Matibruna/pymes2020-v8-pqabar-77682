@@ -53,7 +53,7 @@ export class ContactosComponent implements OnInit {
           )
         ]
       ],
-      Telefono: [null, [Validators.required, Validators.pattern("[0-9]{1,7}")]]
+      Telefono: [null, [Validators.required, Validators.pattern("[0-9]")]]
     });
   }
 
@@ -78,12 +78,12 @@ export class ContactosComponent implements OnInit {
   BuscarPorId(Dto, AccionABMC) {
     window.scroll(0, 0); // ir al incio del scroll
 
-    this.contactosService.getById(Dto.IdArticulo).subscribe((res: any) => {
+    this.contactosService.getById(Dto.IdContacto).subscribe((res: any) => {
       this.FormReg.patchValue(res);
 
       //formatear fecha de  ISO 8061 a string dd/MM/yyyy
-      var arrFecha = res.FechaAlta.substr(0, 10).split("-");
-      this.FormReg.controls.FechaAlta.patchValue(
+      var arrFecha = res.FechaNacimiento.substr(0, 10).split("-");
+      this.FormReg.controls.FechaNacimiento.patchValue(
         arrFecha[2] + "/" + arrFecha[1] + "/" + arrFecha[0]
       );
 
@@ -115,7 +115,7 @@ export class ContactosComponent implements OnInit {
     const itemCopy = { ...this.FormReg.value };
 
     //convertir fecha de string dd/MM/yyyy a ISO para que la entienda webapi
-    var arrFecha = itemCopy.FechaAlta.substr(0, 10).split("/");
+    var arrFecha = itemCopy.FechaNacimiento.substr(0, 10).split("/");
     if (arrFecha.length == 3)
       itemCopy.FechaNacimiento = new Date(
         arrFecha[2],

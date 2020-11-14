@@ -15,15 +15,15 @@ export class ContactosService {
   resourceUrl: string;
 
   constructor(private httpClient: HttpClient) {
-    this.resourceUrl = "https://pav2.azurewebsites.net/api/contactos";
+    this.resourceUrl = "https://pav2.azurewebsites.net/api/contactos/";
   }
 
   get() {
-    return this.httpClient.get<Contacto[]>(this.resourceUrl,);
+    return this.httpClient.get<Contacto[]>(this.resourceUrl);
   }
 
   getById(Id: number) {
-    return this.httpClient.get(this.resourceUrl + Id);
+    return this.httpClient.get<Contacto>(this.resourceUrl + Id);
   }
 
   post(obj: Contacto) {
