@@ -1,16 +1,9 @@
-.btn {
-  margin-bottom: 3em;
-  margin: 1em;
+form {
   padding: 1em;
+  margin-bottom: 1em;
 }
 
-.botones {
-  padding: 2em;
-}
-
-.formulario {
-  height: 3em;
-  width: 40em;
-  margin-top: 2em;
-  margin-bottom: 2em;
+form button {
+  text-align: center;
+  margin: 1em;
 }

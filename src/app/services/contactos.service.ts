@@ -19,9 +19,22 @@ export class ContactosService {
   }
 
   get() {
-    return this.httpClient.get<Contacto[]>(this.resourceUrl);
+    return this.httpClient.get<Contacto[]>(this.resourceUrl,);
   }
+
+  getById(Id: number) {
+    return this.httpClient.get(this.resourceUrl + Id);
+  }
+
   post(obj: Contacto) {
     return this.httpClient.post(this.resourceUrl, obj);
+  }
+
+  put(Id: number, obj: Contacto) {
+    return this.httpClient.put(this.resourceUrl + Id, obj);
+  }
+
+  delete(Id) {
+    return this.httpClient.delete(this.resourceUrl + Id);
   }
 }
