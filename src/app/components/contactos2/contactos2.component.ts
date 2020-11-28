@@ -45,29 +45,22 @@ export class Contactos2Component implements OnInit {
     public formBuilder: FormBuilder,
     //private contactoService: MockArticulosService,
     //private articulosFamiliasService: MockArticulosFamiliasService,
-    private contactoService: ContactosService,
+    private contactosService: ContactosService,
     private modalDialogService: ModalDialogService
   ) {}
 
   ngOnInit() {
     this.FormFiltro = this.formBuilder.group({
-      Nombre: [""],
-      Activo: [true]
+      Nombre: [""]
     });
     this.FormReg = this.formBuilder.group({
-      IdArticulo: [0],
+      IdContacto: [0],
       Nombre: [
         "",
         [Validators.required, Validators.minLength(4), Validators.maxLength(55)]
       ],
-      Precio: [null, [Validators.required, Validators.pattern("[0-9]{1,7}")]],
-      Stock: [null, [Validators.required, Validators.pattern("[0-9]{1,7}")]],
-      CodigoDeBarra: [
-        "",
-        [Validators.required, Validators.pattern("[0-9]{13}")]
-      ],
-      IdArticuloFamilia: ["", [Validators.required]],
-      FechaAlta: [
+      Telefono: ["", [Validators.required, Validators.pattern("[0-9]{1,13}")]],
+      FechaNacimiento: [
         "",
         [
           Validators.required,
@@ -75,14 +68,13 @@ export class Contactos2Component implements OnInit {
             "(0[1-9]|[12][0-9]|3[01])[-/](0[1-9]|1[012])[-/](19|20)[0-9]{2}"
           )
         ]
-      ],
-      Activo: [true]
+      ]
     });
   }
 
   Agregar() {
     this.AccionABMC = "A";
-    this.FormReg.reset({ Activo: true });
+    this.FormReg.reset();
     this.submitted = false;
     //this.FormReg.markAsPristine();
     this.FormReg.markAsUntouched();
@@ -91,9 +83,9 @@ export class Contactos2Component implements OnInit {
   // Buscar segun los filtros, establecidos en FormReg
   Buscar() {
     this.SinBusquedasRealizadas = false;
-    this.contactoService.get().subscribe((res: any) => {
-      this.Lista = res.Lista;
-      this.RegistrosTotal = res.RegistrosTotal;
+    this.contactosService.get().subscribe({
+      next: contactos => (this.Lista = contactos),
+      error: err => console.log(err)
     });
   }
 
@@ -101,12 +93,12 @@ export class Contactos2Component implements OnInit {
   BuscarPorId(Dto, AccionABMC) {
     window.scroll(0, 0); // ir al incio del scroll
 
-    this.contactoService.getById(Dto.IdArticulo).subscribe((res: any) => {
+    this.contactosService.getById(Dto.IdContacto).subscribe((res: any) => {
       this.FormReg.patchValue(res);
 
       //formatear fecha de  ISO 8061 a string dd/MM/yyyy
-      var arrFecha = res.FechaAlta.substr(0, 10).split("-");
-      this.FormReg.controls.FechaAlta.patchValue(
+      var arrFecha = res.FechaNacimiento.substr(0, 10).split("-");
+      this.FormReg.controls.FechaNacimiento.patchValue(
         arrFecha[2] + "/" + arrFecha[1] + "/" + arrFecha[0]
       );
 
@@ -120,12 +112,6 @@ export class Contactos2Component implements OnInit {
 
   // comienza la modificacion, luego la confirma con el metodo Grabar
   Modificar(Dto) {
-    if (!Dto.Activo) {
-      this.modalDialogService.Alert(
-        "No puede modificarse un registro Inactivo."
-      );
-      return;
-    }
     this.submitted = false;
     this.FormReg.markAsPristine();
     this.FormReg.markAsUntouched();
@@ -144,26 +130,26 @@ export class Contactos2Component implements OnInit {
     const itemCopy = { ...this.FormReg.value };
 
     //convertir fecha de string dd/MM/yyyy a ISO para que la entienda webapi
-    var arrFecha = itemCopy.FechaAlta.substr(0, 10).split("/");
+    var arrFecha = itemCopy.FechaNacimiento.substr(0, 10).split("/");
     if (arrFecha.length == 3)
-      itemCopy.FechaAlta = new Date(
+      itemCopy.FechaNacimiento = new Date(
         arrFecha[2],
         arrFecha[1] - 1,
         arrFecha[0]
       ).toISOString();
 
     // agregar post
-    if (itemCopy.IdArticulo == 0 || itemCopy.IdArticulo == null) {
-      itemCopy.IdArticulo = 0;
-      this.contactoService.post(itemCopy).subscribe((res: any) => {
+    if (itemCopy.IdContacto == 0 || itemCopy.IdContacto == null) {
+      itemCopy.IdContacto = 0;
+      this.contactosService.post(itemCopy).subscribe((res: any) => {
         this.Volver();
         this.modalDialogService.Alert("Registro agregado correctamente.");
         this.Buscar();
       });
     } else {
       // modificar put
-      this.contactoService
-        .put(itemCopy.IdArticulo, itemCopy)
+      this.contactosService
+        .put(itemCopy.IdContacto, itemCopy)
         .subscribe((res: any) => {
           this.Volver();
           this.modalDialogService.Alert("Registro modificado correctamente.");
@@ -182,8 +168,8 @@ export class Contactos2Component implements OnInit {
       undefined,
       undefined,
       () =>
-        this.contactoService
-          .delete(Dto.IdArticulo)
+        this.contactosService
+          .delete(Dto.IdContacto)
           .subscribe((res: any) => this.Buscar()),
       null
     );
@@ -196,13 +182,5 @@ export class Contactos2Component implements OnInit {
 
   ImprimirListado() {
     this.modalDialogService.Alert("Sin desarrollar...");
-  }
-
-  GetArticuloFamiliaNombre(Id) {
-    var ArticuloFamilia = this.Familias.filter(
-      x => x.IdArticuloFamilia === Id
-    )[0];
-    if (ArticuloFamilia) return ArticuloFamilia.Nombre;
-    else return "";
   }
 }
