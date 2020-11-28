@@ -21,6 +21,7 @@ import { ArticulosFamiliasComponent } from "./components/articulos-familias/arti
 import { ModalDialogComponent } from "./components/modal-dialog/modal-dialog.component";
 import { ContactosComponent } from "./components/contactos/contactos.component";
 import { ContactosService } from "./services/contactos.service";
+import { Contactos2Component } from "./components/contactos2/contactos2.component";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ContactosService } from "./services/contactos.service";
     ArticulosComponent,
     ArticulosFamiliasComponent,
     ModalDialogComponent,
-    ContactosComponent
+    ContactosComponent,
+    Contactos2Component
   ],
   imports: [
     BrowserModule,
@@ -41,13 +43,14 @@ import { ContactosService } from "./services/contactos.service";
       { path: "inicio", component: InicioComponent },
       { path: "articulos", component: ArticulosComponent },
       { path: "articulosfamilias", component: ArticulosFamiliasComponent },
-      { path: "contactos", component: ContactosComponent }
+      { path: "contactos", component: ContactosComponent },
+      { path: "contactos2", component: Contactos2Component }
     ]),
     NgbPaginationModule,
     NgbModalModule
   ],
   entryComponents: [ModalDialogComponent],
-  providers: [],
+  providers: [ContactosService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
